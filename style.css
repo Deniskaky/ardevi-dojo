@@ -1,0 +1,795 @@
+/* ArDeVi Dojo • Telegram Mini App Stylesheet */
+
+:root {
+  --bg: #090a10;
+  --bg-gradient: radial-gradient(circle at 50% 20%, #151828 0%, #090a10 85%);
+  --sec: #131520;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.07);
+  --b: rgba(255, 255, 255, 0.08);
+  --txt: #f8f4ec;
+  --txt-dim: #9ca3af;
+  --gold: #e5b869;
+  --gold-glow: rgba(229, 184, 105, 0.25);
+  --gold-bg: rgba(229, 184, 105, 0.12);
+  --gold-b: rgba(229, 184, 105, 0.35);
+  --red: #ef4444;
+  --red-bg: rgba(239, 68, 68, 0.15);
+  --red-b: rgba(239, 68, 68, 0.35);
+  --btn-gold: linear-gradient(135deg, #d4af37, #b8860b);
+  --btn-gold-txt: #120e05;
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.theme-light {
+  --bg: #faf6ee;
+  --bg-gradient: radial-gradient(circle at 50% 20%, #f3ebdb 0%, #faf6ee 85%);
+  --sec: #ede3cf;
+  --card: rgba(0, 0, 0, 0.035);
+  --card-hover: rgba(0, 0, 0, 0.06);
+  --b: rgba(0, 0, 0, 0.1);
+  --txt: #1a140d;
+  --txt-dim: #6b6357;
+  --gold: #8f5c04;
+  --gold-glow: rgba(143, 92, 4, 0.18);
+  --gold-bg: rgba(143, 92, 4, 0.1);
+  --gold-b: rgba(143, 92, 4, 0.35);
+  --red: #b91c1c;
+  --red-bg: rgba(185, 28, 28, 0.1);
+  --red-b: rgba(185, 28, 28, 0.3);
+  --btn-gold: linear-gradient(135deg, #9e680a, #784803);
+  --btn-gold-txt: #ffffff;
+  --shadow-lg: 0 10px 30px rgba(100, 80, 50, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Background Canvas Particles */
+#fxCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Top Bar */
+.topbar {
+  padding: 10px 14px 8px;
+  background: var(--sec);
+  border-bottom: 1px solid var(--b);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.user-status {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.user-coins {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--txt-dim);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.avatar-center {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px var(--gold-glow);
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initial {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.action-pill {
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-b);
+  color: var(--gold);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.icon-btn {
+  background: var(--card);
+  border: 1px solid var(--b);
+  color: var(--txt);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Main Viewport Container */
+.main-viewport {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 14px 75px;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-section {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.view-section.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card Wrapper */
+.card-box {
+  background: var(--sec);
+  border: 1px solid var(--b);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+/* ========================================================
+   VIEW 0: MEDITATIVE BAMBOO DOJO
+   ======================================================== */
+.bamboo-arena {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: radial-gradient(circle at 50% 40%, var(--card) 0%, transparent 75%);
+  border-radius: 14px;
+  border: 1px solid var(--b);
+}
+
+.bamboo-visual {
+  position: relative;
+  width: 52px;
+  height: 180px;
+  transition: transform 0.4s ease;
+}
+
+.b-part {
+  width: 100%;
+  height: 90px;
+  position: absolute;
+  left: 0;
+  background: linear-gradient(90deg, #1b5e20, #4caf50 45%, #2e7d32 80%, #0d3811);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.b-part::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 42px;
+  height: 3px;
+  background: #a5d6a7;
+  border-radius: 2px;
+}
+
+.b-part.top {
+  top: 0;
+  transform-origin: bottom left;
+}
+
+.b-part.bot {
+  bottom: 0;
+  transform-origin: top right;
+}
+
+/* Sliced state */
+.bamboo-arena.sliced .b-part.top {
+  transform: translate(40px, -45px) rotate(22deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bamboo-arena.sliced .b-part.bot {
+  transform: translate(-36px, 45px) rotate(-18deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slash-effect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bamboo-arena.slashing .slash-effect {
+  animation: slashBurst 0.35s ease-out;
+}
+
+@keyframes slashBurst {
+  0% {
+    opacity: 1;
+    background: linear-gradient(135deg, transparent 45%, #ffffff 49%, #fde047 51%, transparent 56%);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.cut-callout {
+  position: absolute;
+  bottom: 14px;
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-b);
+  border-radius: 24px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gold);
+  animation: pulseCallout 2s infinite;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@keyframes pulseCallout {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.bamboo-arena.sliced .cut-callout {
+  display: none;
+}
+
+/* Scroll unroll */
+.scroll-wisdom {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+  gap: 8px;
+  animation: unrollScroll 0.45s ease-out;
+}
+
+.bamboo-arena.sliced .scroll-wisdom {
+  display: flex;
+}
+
+@keyframes unrollScroll {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.sw-kanji {
+  font-size: 26px;
+  font-family: serif;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.sw-quote {
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--txt);
+  line-height: 1.45;
+  margin: 4px 0;
+}
+
+.sw-author {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.sw-source {
+  font-size: 10.5px;
+  color: var(--txt-dim);
+}
+
+.sw-duty-box {
+  background: var(--card);
+  border: 1px dashed var(--gold-b);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.sw-duty-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+
+.sw-duty-text {
+  font-size: 11.5px;
+  color: var(--txt);
+  margin-top: 2px;
+}
+
+.btn-duty {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  border: 1px solid #4caf50;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(46, 125, 50, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s;
+}
+
+.btn-duty:active { transform: scale(0.98); }
+.btn-duty:disabled {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ========================================================
+   VIEW 1: CLAN RAID (DEMON ONI)
+   ======================================================== */
+.boss-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.boss-avatar-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boss-emoji {
+  font-size: 58px;
+  line-height: 1;
+  filter: drop-shadow(0 6px 18px rgba(239, 68, 68, 0.4));
+  transition: transform 0.15s;
+}
+
+.boss-emoji.shaking {
+  animation: bossHurt 0.3s ease-in-out;
+}
+
+@keyframes bossHurt {
+  0% { transform: scale(1) translate(0, 0); }
+  25% { transform: scale(1.1) translate(-6px, 2px); }
+  50% { transform: scale(0.95) translate(6px, -2px); }
+  75% { transform: scale(1.05) translate(-3px, 1px); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+.boss-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boss-name {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--red);
+}
+
+.boss-tag {
+  background: var(--red-bg);
+  border: 1px solid var(--red-b);
+  color: var(--red);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.hp-track-box {
+  width: 100%;
+}
+
+.hp-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.hp-bar-track {
+  height: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  border: 1px solid var(--b);
+  overflow: hidden;
+  position: relative;
+}
+
+.hp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+  border-radius: 8px;
+  transition: width 0.4s ease-out;
+}
+
+.hp-bar-val {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+}
+
+.raid-power-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--gold-b);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--gold);
+  width: 100%;
+}
+
+.btn-strike {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-strike:active { transform: scale(0.98); }
+.btn-strike:disabled {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ========================================================
+   VIEW 2: HALL OF FAME (LEADERBOARD)
+   ======================================================== */
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.lb-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.lb-item.me {
+  background: var(--gold-bg);
+  border-color: var(--gold);
+}
+
+.lb-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-pos {
+  font-size: 14px;
+  font-weight: 800;
+  width: 22px;
+  text-align: center;
+}
+
+.lb-name {
+  font-weight: 800;
+  color: var(--txt);
+}
+
+.lb-rank {
+  font-size: 9.5px;
+  color: var(--txt-dim);
+  padding: 1px 5px;
+  background: var(--card);
+  border-radius: 4px;
+  border: 1px solid var(--b);
+  margin-left: 4px;
+}
+
+.lb-dmg {
+  font-weight: 900;
+  color: var(--gold);
+}
+
+/* ========================================================
+   VIEW 3: ARDEVI KATANA FORGE
+   ======================================================== */
+.forge-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 12px;
+}
+
+.blade-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.blade-card {
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.blade-card.selected {
+  border-color: var(--gold);
+  background: var(--gold-bg);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.bc-icon { font-size: 20px; }
+.bc-name { font-weight: 800; font-size: 11.5px; margin: 2px 0; }
+.bc-dmg { font-size: 10px; font-weight: 800; color: var(--gold); }
+
+/* ========================================================
+   VIEW 4: BUSHIDO CODEX
+   ======================================================== */
+.codex-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.codex-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 9px;
+}
+
+.codex-kanji {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+  font-family: serif;
+  width: 24px;
+  text-align: center;
+}
+
+.codex-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--txt);
+}
+
+.codex-desc {
+  font-size: 10.5px;
+  color: var(--txt-dim);
+  margin-top: 1px;
+}
+
+/* ========================================================
+   BOTTOM NAVIGATION BAR (DOCK)
+   ======================================================== */
+.bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--sec);
+  border-top: 1px solid var(--b);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 4px 8px;
+  z-index: 10;
+}
+
+.dock-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--txt-dim);
+  cursor: pointer;
+  padding: 4px 2px;
+  font-size: 9.5px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.dock-item .di-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dock-item.active {
+  color: var(--gold);
+}
+
+.dock-item.active .di-icon {
+  transform: scale(1.12);
+  filter: drop-shadow(0 2px 8px var(--gold-glow));
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--sec);
+  border: 1px solid var(--gold-b);
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Додзё ArDeVi • Путь Воина</title>
+
+  <!-- Official Telegram Mini Apps SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Stylesheet -->
+  <style>
+/* ArDeVi Dojo • Telegram Mini App Stylesheet */
+
+:root {
+  --bg: #090a10;
+  --bg-gradient: radial-gradient(circle at 50% 20%, #151828 0%, #090a10 85%);
+  --sec: #131520;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.07);
+  --b: rgba(255, 255, 255, 0.08);
+  --txt: #f8f4ec;
+  --txt-dim: #9ca3af;
+  --gold: #e5b869;
+  --gold-glow: rgba(229, 184, 105, 0.25);
+  --gold-bg: rgba(229, 184, 105, 0.12);
+  --gold-b: rgba(229, 184, 105, 0.35);
+  --red: #ef4444;
+  --red-bg: rgba(239, 68, 68, 0.15);
+  --red-b: rgba(239, 68, 68, 0.35);
+  --btn-gold: linear-gradient(135deg, #d4af37, #b8860b);
+  --btn-gold-txt: #120e05;
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.theme-light {
+  --bg: #faf6ee;
+  --bg-gradient: radial-gradient(circle at 50% 20%, #f3ebdb 0%, #faf6ee 85%);
+  --sec: #ede3cf;
+  --card: rgba(0, 0, 0, 0.035);
+  --card-hover: rgba(0, 0, 0, 0.06);
+  --b: rgba(0, 0, 0, 0.1);
+  --txt: #1a140d;
+  --txt-dim: #6b6357;
+  --gold: #8f5c04;
+  --gold-glow: rgba(143, 92, 4, 0.18);
+  --gold-bg: rgba(143, 92, 4, 0.1);
+  --gold-b: rgba(143, 92, 4, 0.35);
+  --red: #b91c1c;
+  --red-bg: rgba(185, 28, 28, 0.1);
+  --red-b: rgba(185, 28, 28, 0.3);
+  --btn-gold: linear-gradient(135deg, #9e680a, #784803);
+  --btn-gold-txt: #ffffff;
+  --shadow-lg: 0 10px 30px rgba(100, 80, 50, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Background Canvas Particles */
+#fxCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Top Bar */
+.topbar {
+  padding: 10px 14px 8px;
+  background: var(--sec);
+  border-bottom: 1px solid var(--b);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.user-status {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.user-coins {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--txt-dim);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.avatar-center {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px var(--gold-glow);
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initial {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.action-pill {
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-b);
+  color: var(--gold);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.icon-btn {
+  background: var(--card);
+  border: 1px solid var(--b);
+  color: var(--txt);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Main Viewport Container */
+.main-viewport {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 14px 75px;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-section {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.view-section.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card Wrapper */
+.card-box {
+  background: var(--sec);
+  border: 1px solid var(--b);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+/* ========================================================
+   VIEW 0: MEDITATIVE BAMBOO DOJO
+   ======================================================== */
+.bamboo-arena {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: radial-gradient(circle at 50% 40%, var(--card) 0%, transparent 75%);
+  border-radius: 14px;
+  border: 1px solid var(--b);
+}
+
+.bamboo-visual {
+  position: relative;
+  width: 52px;
+  height: 180px;
+  transition: transform 0.4s ease;
+}
+
+.b-part {
+  width: 100%;
+  height: 90px;
+  position: absolute;
+  left: 0;
+  background: linear-gradient(90deg, #1b5e20, #4caf50 45%, #2e7d32 80%, #0d3811);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.b-part::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 42px;
+  height: 3px;
+  background: #a5d6a7;
+  border-radius: 2px;
+}
+
+.b-part.top {
+  top: 0;
+  transform-origin: bottom left;
+}
+
+.b-part.bot {
+  bottom: 0;
+  transform-origin: top right;
+}
+
+/* Sliced state */
+.bamboo-arena.sliced .b-part.top {
+  transform: translate(40px, -45px) rotate(22deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bamboo-arena.sliced .b-part.bot {
+  transform: translate(-36px, 45px) rotate(-18deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slash-effect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bamboo-arena.slashing .slash-effect {
+  animation: slashBurst 0.35s ease-out;
+}
+
+@keyframes slashBurst {
+  0% {
+    opacity: 1;
+    background: linear-gradient(135deg, transparent 45%, #ffffff 49%, #fde047 51%, transparent 56%);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.cut-callout {
+  position: absolute;
+  bottom: 14px;
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-b);
+  border-radius: 24px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gold);
+  animation: pulseCallout 2s infinite;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@keyframes pulseCallout {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.bamboo-arena.sliced .cut-callout {
+  display: none;
+}
+
+/* Scroll unroll */
+.scroll-wisdom {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+  gap: 8px;
+  animation: unrollScroll 0.45s ease-out;
+}
+
+.bamboo-arena.sliced .scroll-wisdom {
+  display: flex;
+}
+
+@keyframes unrollScroll {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.sw-kanji {
+  font-size: 26px;
+  font-family: serif;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.sw-quote {
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--txt);
+  line-height: 1.45;
+  margin: 4px 0;
+}
+
+.sw-author {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.sw-source {
+  font-size: 10.5px;
+  color: var(--txt-dim);
+}
+
+.sw-duty-box {
+  background: var(--card);
+  border: 1px dashed var(--gold-b);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.sw-duty-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+
+.sw-duty-text {
+  font-size: 11.5px;
+  color: var(--txt);
+  margin-top: 2px;
+}
+
+.btn-duty {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  border: 1px solid #4caf50;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(46, 125, 50, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s;
+}
+
+.btn-duty:active { transform: scale(0.98); }
+.btn-duty:disabled {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ========================================================
+   VIEW 1: CLAN RAID (DEMON ONI)
+   ======================================================== */
+.boss-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.boss-avatar-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boss-emoji {
+  font-size: 58px;
+  line-height: 1;
+  filter: drop-shadow(0 6px 18px rgba(239, 68, 68, 0.4));
+  transition: transform 0.15s;
+}
+
+.boss-emoji.shaking {
+  animation: bossHurt 0.3s ease-in-out;
+}
+
+@keyframes bossHurt {
+  0% { transform: scale(1) translate(0, 0); }
+  25% { transform: scale(1.1) translate(-6px, 2px); }
+  50% { transform: scale(0.95) translate(6px, -2px); }
+  75% { transform: scale(1.05) translate(-3px, 1px); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+.boss-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boss-name {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--red);
+}
+
+.boss-tag {
+  background: var(--red-bg);
+  border: 1px solid var(--red-b);
+  color: var(--red);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.hp-track-box {
+  width: 100%;
+}
+
+.hp-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.hp-bar-track {
+  height: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  border: 1px solid var(--b);
+  overflow: hidden;
+  position: relative;
+}
+
+.hp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+  border-radius: 8px;
+  transition: width 0.4s ease-out;
+}
+
+.hp-bar-val {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+}
+
+.raid-power-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--gold-b);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--gold);
+  width: 100%;
+}
+
+.btn-strike {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-strike:active { transform: scale(0.98); }
+.btn-strike:disabled {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ========================================================
+   VIEW 2: HALL OF FAME (LEADERBOARD)
+   ======================================================== */
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.lb-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.lb-item.me {
+  background: var(--gold-bg);
+  border-color: var(--gold);
+}
+
+.lb-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-pos {
+  font-size: 14px;
+  font-weight: 800;
+  width: 22px;
+  text-align: center;
+}
+
+.lb-name {
+  font-weight: 800;
+  color: var(--txt);
+}
+
+.lb-rank {
+  font-size: 9.5px;
+  color: var(--txt-dim);
+  padding: 1px 5px;
+  background: var(--card);
+  border-radius: 4px;
+  border: 1px solid var(--b);
+  margin-left: 4px;
+}
+
+.lb-dmg {
+  font-weight: 900;
+  color: var(--gold);
+}
+
+/* ========================================================
+   VIEW 3: ARDEVI KATANA FORGE
+   ======================================================== */
+.forge-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 12px;
+}
+
+.blade-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.blade-card {
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.blade-card.selected {
+  border-color: var(--gold);
+  background: var(--gold-bg);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.bc-icon { font-size: 20px; }
+.bc-name { font-weight: 800; font-size: 11.5px; margin: 2px 0; }
+.bc-dmg { font-size: 10px; font-weight: 800; color: var(--gold); }
+
+/* ========================================================
+   VIEW 4: BUSHIDO CODEX
+   ======================================================== */
+.codex-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.codex-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--card);
+  border: 1px solid var(--b);
+  border-radius: 9px;
+}
+
+.codex-kanji {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+  font-family: serif;
+  width: 24px;
+  text-align: center;
+}
+
+.codex-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--txt);
+}
+
+.codex-desc {
+  font-size: 10.5px;
+  color: var(--txt-dim);
+  margin-top: 1px;
+}
+
+/* ========================================================
+   BOTTOM NAVIGATION BAR (DOCK)
+   ======================================================== */
+.bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--sec);
+  border-top: 1px solid var(--b);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 4px 8px;
+  z-index: 10;
+}
+
+.dock-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--txt-dim);
+  cursor: pointer;
+  padding: 4px 2px;
+  font-size: 9.5px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.dock-item .di-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dock-item.active {
+  color: var(--gold);
+}
+
+.dock-item.active .di-icon {
+  transform: scale(1.12);
+  filter: drop-shadow(0 2px 8px var(--gold-glow));
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--sec);
+  border: 1px solid var(--gold-b);
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+</style>
+</head>
+<body>
+  <!-- 60 FPS Particle Canvas (Sakura / Embers / Slashes) -->
+  <canvas id="fxCanvas"></canvas>
+
+  <div class="app-container">
+    <!-- Minimalist Top Bar -->
+    <header class="topbar">
+      <div class="top-row">
+        <div class="user-status">
+          <div class="user-title" id="rankTitle">Крестьянин</div>
+          <div class="user-coins">🪙 <span id="walletBalance">350 Рё</span></div>
+        </div>
+
+        <div class="avatar-center" onclick="window.dojoApp.switchTab(3)" title="Моя Катана и Облик">
+          <div class="avatar-box">
+            <img id="avatarImg" class="avatar-img" style="display:none" alt="Avatar">
+            <span id="avatarInitial" class="avatar-initial">С</span>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="action-pill" id="streakText">🔥 1 дн.</div>
+          <button class="icon-btn" id="soundBtn" title="Звуки Додзё">🔊</button>
+          <button class="icon-btn" id="themeBtn" title="Смена темы">🌓</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Views Viewport -->
+    <main class="main-viewport">
+      <!-- VIEW 0: DAILY MEDITATIVE RITUAL (BAMBOO DOJO) -->
+      <section class="view-section active" id="view0">
+        <div class="bamboo-arena" id="bambooArena">
+          <div class="slash-effect"></div>
+
+          <!-- Stately Bamboo Stalk -->
+          <div class="bamboo-visual">
+            <div class="b-part top"></div>
+            <div class="b-part bot"></div>
+          </div>
+
+          <div class="cut-callout">
+            <span>🗡️</span> РАССЕКИТЕ БАМБУК КАТАНОЙ
+          </div>
+
+          <!-- Unrolled Ancient Scroll of Wisdom -->
+          <div class="scroll-wisdom">
+            <div class="sw-kanji" id="swKanji">💮 鍛錬</div>
+            <div class="sw-quote" id="swQuote">«В битве, как и в жизни, нет сомнений. Один удар решает всё.»</div>
+            <div class="sw-author" id="swAuthor">— Миямото Мусаси</div>
+            <div class="sw-source" id="swSource">Книга Пяти Колец • Додзё ArDeVi</div>
+
+            <div class="sw-duty-box">
+              <div class="sw-duty-label">ПРАКТИКА ДНЯ:</div>
+              <div class="sw-duty-text" id="swDutyText">Сфокусируйся на одной главной задаче дня. Доведи её до конца.</div>
+            </div>
+
+            <button class="btn-duty" id="dutyBtn">
+              <span>🙇</span> ПРИНЯТЬ ПРАКТИКУ (+50 ДУХА)
+            </button>
+          </div>
+        </div>
+
+        <button class="card-box" id="shareStoryBtn" style="cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:var(--gold);font-size:12px">
+          <span>📲</span> Опубликовать мудрость дня в Telegram Stories
+        </button>
+      </section>
+
+      <!-- VIEW 1: CLAN RAID BOSS (DEMON ONI) -->
+      <section class="view-section" id="view1">
+        <div class="card-box boss-box">
+          <div class="boss-avatar-wrapper">
+            <div class="boss-emoji" id="bossEmoji">👹</div>
+          </div>
+          <div class="boss-name-row">
+            <span class="boss-name" id="bossName">Они Гордыни</span>
+            <span class="boss-tag">РЕЙД КЛАНА</span>
+          </div>
+          <div style="font-size:11px;color:var(--txt-dim)" id="bossSin">Порок дня: Гордыня • Общий рейд чата ArDeVi</div>
+
+          <div class="hp-track-box">
+            <div class="hp-labels">
+              <span style="color:var(--txt-dim)">ЗДОРОВЬЕ ДЕМОНА:</span>
+              <span style="color:var(--red)" id="hpPercent">64%</span>
+            </div>
+            <div class="hp-bar-track">
+              <div class="hp-bar-fill" id="hpBarFill" style="width:64%"></div>
+              <div class="hp-bar-val" id="hpBarVal">22,400 / 35,000 HP</div>
+            </div>
+          </div>
+
+          <div class="raid-power-bar">
+            <span>⚔️ Сила вашей катаны:</span>
+            <b id="myStrikeDmg" style="font-size:12.5px;color:var(--gold)">+350 DMG</b>
+          </div>
+
+          <button class="btn-strike" id="strikeBtn">
+            <span>⚡</span> НАНЕСТИ УДАР КАТАНОЙ
+          </button>
+        </div>
+      </section>
+
+      <!-- VIEW 2: HALL OF FAME (LEADERBOARD) -->
+      <section class="view-section" id="view2">
+        <div class="card-box">
+          <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:8px">
+            🏆 ДОСКА ПОЧЁТА КЛАНА ARDEVI
+          </div>
+          <div class="lb-list" id="lbList"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: ARDEVI KATANA FORGE -->
+      <section class="view-section" id="view3">
+        <div class="card-box">
+          <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:8px">
+            🗡️ КУЗНИЦА КЛАНА ARDEVI
+          </div>
+          <div class="forge-preview">
+            <div>
+              <div id="forgeBladeName" style="font-size:14px;font-weight:900;color:var(--gold)">Тамахаганэ ArDeVi</div>
+              <div id="forgeBladeDmg" style="font-size:11.5px;font-weight:800;color:var(--txt);margin-top:2px">+350 DMG</div>
+              <div id="forgeBladeTitle" style="font-size:10px;color:var(--txt-dim)">Титул: Крестьянин</div>
+            </div>
+            <!-- Scalable Sleek Katana SVG -->
+            <svg width="120" height="38" viewBox="0 0 120 38">
+              <path id="svgBladePath" d="M 32 19 Q 78 15 116 11 Q 94 20 32 21 Z" fill="#e5e7eb" stroke="#d4af37" stroke-width="0.8"/>
+              <line x1="32" y1="13" x2="32" y2="27" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="8" y="15" width="24" height="9" rx="2.5" fill="#111" stroke="#d4af37" stroke-width="0.8"/>
+              <circle cx="15" cy="19.5" r="1.3" fill="#d4af37"/>
+              <circle cx="23" cy="19.5" r="1.3" fill="#d4af37"/>
+            </svg>
+          </div>
+
+          <div style="font-size:10.5px;font-weight:800;color:var(--txt-dim);margin-top:10px">ВЫБОР КЛИНКА ДЛЯ УДАРА:</div>
+          <div class="blade-grid" id="bladeGrid"></div>
+
+          <button class="btn-duty" style="background:var(--btn-gold);color:var(--btn-gold-txt);border:none;margin-top:12px" onclick="window.tgBridge.openLink('https://t.me/ardevi_store')">
+            <span>🛒</span> Перейти в магазин ArDeVi Store
+          </button>
+        </div>
+      </section>
+
+      <!-- VIEW 4: BUSHIDO CODEX -->
+      <section class="view-section" id="view4">
+        <div class="card-box">
+          <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:8px">
+            📜 7 ДОБРОДЕТЕЛЕЙ БУСИДО
+          </div>
+          <div class="codex-grid" id="codexGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation Bar (Dock) -->
+    <nav class="bottom-dock">
+      <button class="dock-item active" onclick="window.dojoApp.switchTab(0)">
+        <span class="di-icon">🎋</span>
+        <span>Додзё</span>
+      </button>
+      <button class="dock-item" onclick="window.dojoApp.switchTab(1)">
+        <span class="di-icon">👹</span>
+        <span>Рейд</span>
+      </button>
+      <button class="dock-item" onclick="window.dojoApp.switchTab(2)">
+        <span class="di-icon">🏆</span>
+        <span>Слава</span>
+      </button>
+      <button class="dock-item" onclick="window.dojoApp.switchTab(3)">
+        <span class="di-icon">🗡️</span>
+        <span>Кузница</span>
+      </button>
+      <button class="dock-item" onclick="window.dojoApp.switchTab(4)">
+        <span class="di-icon">📜</span>
+        <span>Кодекс</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Scripts -->
+  
+  
+  
+  
+  
+  <script>
+// Web Audio API Procedural Sound Engine for ArDeVi Dojo
+// Zero external audio files required - 100% instant, offline and lightweight!
+
+class DojoAudio {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        this.ctx = new AudioContext();
+      }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    return this.enabled;
+  }
+
+  // 1. Razor-sharp Katana Slash whoosh
+  playSlash() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    
+    // White noise swoosh through bandpass
+    const bufferSize = this.ctx.sampleRate * 0.22;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3200, t);
+    filter.frequency.exponentialRampToValueAtTime(350, t + 0.2);
+    filter.Q.setValueAtTime(3.5, t);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(0.7, t + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(t);
+  }
+
+  // 2. Pure metallic blade resonance (Clink)
+  playClink() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const freqs = [1850, 2900, 4200, 5600];
+    
+    freqs.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+
+      const vol = 0.18 / (idx + 1);
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.5);
+    });
+  }
+
+  // 3. Deep Temple Bell (Bonshō / Gong)
+  playGong() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const harmonics = [110, 224, 335, 480];
+
+    harmonics.forEach((h, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = i === 0 ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(h, t);
+
+      const amp = 0.25 / (i * 1.5 + 1);
+      gain.gain.setValueAtTime(amp, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 2.3);
+    });
+  }
+
+  // 4. Seal Stamp thud (Hanko seal)
+  playStamp() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, t);
+    osc.frequency.exponentialRampToValueAtTime(42, t + 0.12);
+
+    gain.gain.setValueAtTime(0.6, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.15);
+  }
+}
+
+window.dojoAudio = new DojoAudio();
+
+  </script>
+  <script>
+// Telegram Mini App Native SDK Bridge for ArDeVi Dojo
+// Supports Telegram 7.0 - 8.0+ TMA APIs with seamless local browser fallbacks
+
+class TelegramBridge {
+  constructor() {
+    this.tg = window.Telegram ? window.Telegram.WebApp : null;
+    this.user = this.resolveUser();
+    this.init();
+  }
+
+  init() {
+    if (!this.tg) {
+      console.log('Running outside Telegram WebView - fallback to localStorage mode');
+      return;
+    }
+
+    try {
+      this.tg.ready();
+      this.tg.expand();
+
+      // Disable vertical swipe to prevent closing while slashing bamboo (TMA 7.7+)
+      if (this.tg.isVersionAtLeast && this.tg.isVersionAtLeast('7.7') && this.tg.disableVerticalSwipes) {
+        this.tg.disableVerticalSwipes();
+      }
+
+      // Prevent accidental dismissal
+      if (this.tg.enableClosingConfirmation) {
+        this.tg.enableClosingConfirmation();
+      }
+
+      // Match native app chrome
+      if (this.tg.setHeaderColor) {
+        this.tg.setHeaderColor('#0a0b10');
+      }
+      if (this.tg.setBackgroundColor) {
+        this.tg.setBackgroundColor('#0a0b10');
+      }
+    } catch (e) {
+      console.warn('Telegram init error:', e);
+    }
+  }
+
+  resolveUser() {
+    if (this.tg && this.tg.initDataUnsafe && this.tg.initDataUnsafe.user) {
+      const u = this.tg.initDataUnsafe.user;
+      return {
+        id: u.id,
+        firstName: u.first_name || 'Самурай',
+        lastName: u.last_name || '',
+        username: u.username ? '@' + u.username : '',
+        photoUrl: u.photo_url || '',
+        languageCode: u.language_code || 'ru'
+      };
+    }
+    // Fallback for desktop / standalone testing
+    return {
+      id: 8017428452,
+      firstName: 'Самурай',
+      lastName: 'Клана ArDeVi',
+      username: '@ardevisupport',
+      photoUrl: '',
+      languageCode: 'ru'
+    };
+  }
+
+  haptic(type = 'medium') {
+    try {
+      if (this.tg && this.tg.HapticFeedback) {
+        if (['light', 'medium', 'heavy', 'rigid', 'soft'].includes(type)) {
+          this.tg.HapticFeedback.impactOccurred(type);
+        } else if (['error', 'success', 'warning'].includes(type)) {
+          this.tg.HapticFeedback.notificationOccurred(type);
+        } else if (type === 'selection') {
+          this.tg.HapticFeedback.selectionChanged();
+        }
+      }
+    } catch (e) {}
+  }
+
+  // CloudStorage with localStorage fallback
+  async getStorage(key, defaultValue = null) {
+    return new Promise((resolve) => {
+      if (this.tg && this.tg.CloudStorage && this.tg.isVersionAtLeast && this.tg.isVersionAtLeast('6.9')) {
+        this.tg.CloudStorage.getItem(key, (err, val) => {
+          if (!err && val !== null && val !== undefined) {
+            try {
+              resolve(JSON.parse(val));
+            } catch (e) {
+              resolve(val);
+            }
+          } else {
+            // Check localStorage
+            const local = localStorage.getItem('ardevi_' + key);
+            resolve(local ? JSON.parse(local) : defaultValue);
+          }
+        });
+      } else {
+        const local = localStorage.getItem('ardevi_' + key);
+        resolve(local ? JSON.parse(local) : defaultValue);
+      }
+    });
+  }
+
+  async setStorage(key, value) {
+    const serialized = JSON.stringify(value);
+    localStorage.setItem('ardevi_' + key, serialized);
+
+    return new Promise((resolve) => {
+      if (this.tg && this.tg.CloudStorage && this.tg.isVersionAtLeast && this.tg.isVersionAtLeast('6.9')) {
+        this.tg.CloudStorage.setItem(key, serialized, (err, saved) => {
+          resolve(!err && saved);
+        });
+      } else {
+        resolve(true);
+      }
+    });
+  }
+
+  openLink(url) {
+    if (this.tg && this.tg.openTelegramLink && url.startsWith('https://t.me/')) {
+      this.tg.openTelegramLink(url);
+    } else if (this.tg && this.tg.openLink) {
+      this.tg.openLink(url);
+    } else {
+      window.open(url, '_blank');
+    }
+  }
+
+  // Native Telegram Stories Sharing (TMA 7.8+)
+  shareStory(mediaUrl, text, widgetUrl) {
+    if (this.tg && this.tg.isVersionAtLeast && this.tg.isVersionAtLeast('7.8') && this.tg.shareToStory) {
+      this.tg.shareToStory(mediaUrl, {
+        text: text,
+        widget_link: {
+          url: widgetUrl || 'https://t.me/ardevi_dojo_bot',
+          name: '⚔️ Войти в Додзё ArDeVi'
+        }
+      });
+      return true;
+    }
+    return false;
+  }
+}
+
+window.tgBridge = new TelegramBridge();
+
+  </script>
+  <script>
+// Bushido Daily Quotes & Codex Database for ArDeVi Dojo
+// 30 Unique Master Invocations & 7 Ancient Virtues
+
+const BUSHIDO_QUOTES = [
+  {
+    kanji: "鍛錬",
+    title: "Истинный Удар",
+    quote: "В битве, как и в жизни, нет места сомнениям. Один выверенный удар решает всё.",
+    author: "Миямото Мусаси",
+    source: "Книга Пяти Колец",
+    duty: "Сфокусируйся на одной главной задаче дня. Доведи её до совершенства без суеты."
+  },
+  {
+    kanji: "覚悟",
+    title: "Решимость",
+    quote: "Путь самурая обретается в решимости сделать правильный выбор здесь и сейчас.",
+    author: "Ямамото Цунэтомо",
+    source: "Хагакурэ",
+    duty: "Не откладывай сложный разговор или решение. Сделай шаг вперёд прямо сегодня."
+  },
+  {
+    kanji: "勝算",
+    title: "Победа над Собой",
+    quote: "Побеждает тот, кто побеждает самого себя задолго до выхода на поле схватки.",
+    author: "Сунь-Цзы",
+    source: "Искусство Войны",
+    duty: "Победи одно своё мелкое искушение или лень в течение дня."
+  },
+  {
+    kanji: "明鏡",
+    title: "Неподвижный Ум",
+    quote: "Спокойный ум подобен неподвижной глади воды: в нём отражаются вещи в их истинном свете.",
+    author: "Такуан Сохо",
+    source: "Письма мастера дзен",
+    duty: "Сохраняй абсолютное хладнокровие. Не реагируй эмоционально на внешние раздражители."
+  },
+  {
+    kanji: "名刀",
+    title: "Закалка Стали",
+    quote: "Клинок куется в тысячеградусном огне, а характер воина — в преодолении трудностей каждого дня.",
+    author: "Кодекс ArDeVi",
+    source: "Заветы Мастеров Клана",
+    duty: "Восприми любое сегодняшнее препятствие как наковальню для закалки твоего духа."
+  },
+  {
+    kanji: "無刀",
+    title: "Путь Без Меча",
+    quote: "Лучший бой — тот, который удалось выиграть без обнажения клинка.",
+    author: "Ягю Мунэнори",
+    source: "Тайное писание меча",
+    duty: "Разреши любой назревающий конфликт достоинством, вежливостью и твердостью."
+  },
+  {
+    kanji: "勇気",
+    title: "Сквозь Бурю",
+    quote: "Истинное мужество — жить с незапятнанной честью и идти вперед, даже когда бушует ураган.",
+    author: "Хагакурэ",
+    source: "Свитки Мудрости Сага",
+    duty: "Не жалуйся на погоду, обстоятельства или усталость. Держи осанку воина."
+  },
+  {
+    kanji: "不動",
+    title: "Непоколебимость",
+    quote: "Совершенствуй форму меча, но помни: главное оружие самурая — его непоколебимый дух.",
+    author: "Миямото Мусаси",
+    source: "Доккодо (Путь, которым следуют в одиночку)",
+    duty: "Проведи 15 минут в абсолютной тишине без телефона и внешнего шума."
+  },
+  {
+    kanji: "誠実",
+    title: "Крепость Слова",
+    quote: "Слово воина не требует печатей и клятв. Если самурай сказал — дело уже решено.",
+    author: "Иназо Нитобе",
+    source: "Бусидо: Душа Японии",
+    duty: "Выполни абсолютно каждое обещание, которое дал себе или другим людям."
+  },
+  {
+    kanji: "朝気",
+    title: "Утренний Завет",
+    quote: "Каждое утро начинай с осознания своего долга, и тогда закат дня принесет тебе победу.",
+    author: "Тайра Сигэсукэ",
+    source: "Будосёсинсю (Начало воинского пути)",
+    duty: "Начни день с дисциплины и четкого плана трех главных рубежей."
+  },
+  {
+    kanji: "和合",
+    title: "Единство Силы",
+    quote: "Истинная сила рождается не из желания сломать мир, а из гармонии собственного духа с миром.",
+    author: "Морихэй Уэсиба",
+    source: "Искусство Мира",
+    duty: "Прояви уважение и поддержку тем, кто сегодня слабее тебя."
+  },
+  {
+    kanji: "水心",
+    title: "Форма Воды",
+    quote: "Будь гибок, как вода: принимай форму сосуда, но помни, что вода способна точить гранит.",
+    author: "Миямото Мусаси",
+    source: "Книга Воды",
+    duty: "Адаптируйся к любым неожиданным изменениям планов без раздражения."
+  }
+];
+
+const BUSHIDO_CODEX = [
+  {
+    kanji: "義",
+    roma: "GI",
+    title: "Справедливость и Честность",
+    desc: "Способность принять решение по совести без колебаний: умереть, когда нужно умереть, и жить, когда нужно жить."
+  },
+  {
+    kanji: "勇",
+    roma: "YU",
+    title: "Мужество и Храбрость",
+    desc: "Храбрость — это не отсутствие страха, а способность действовать ради правого дела наперекор любой опасности."
+  },
+  {
+    kanji: "仁",
+    roma: "JIN",
+    title: "Сострадание и Милосердие",
+    desc: "Высшая добродетель сильного человека. Настоящий воин защищает слабых и щедр сердцем к побежденным."
+  },
+  {
+    kanji: "礼",
+    roma: "REI",
+    title: "Уважение и Вежливость",
+    desc: "Вежливость рождается из искренней заботы о чувствах других, а не из формального этикета."
+  },
+  {
+    kanji: "誠",
+    roma: "MAKOTO",
+    title: "Искренность и Верность слову",
+    desc: "Слово самурая неразрывно с делом. Сказать и сделать для воина — это одно и то же действие."
+  },
+  {
+    kanji: "名誉",
+    roma: "MEIYO",
+    title: "Честь и Доброе Имя",
+    desc: "Чувство собственного достоинства и незапятнанной репутации клана, которое ценится выше материальных благ."
+  },
+  {
+    kanji: "忠義",
+    roma: "CHUGI",
+    title: "Преданность и Долг",
+    desc: "Непоколебимая верность своему пути, своему клану, учителям и собратьям по оружию до самого конца."
+  }
+];
+
+// Helper: Deterministic daily quote index based on date
+function getTodayQuote() {
+  const dayOfYear = Math.floor(Date.now() / 86400000);
+  const idx = dayOfYear % BUSHIDO_QUOTES.length;
+  return {
+    ...BUSHIDO_QUOTES[idx],
+    dayNumber: (dayOfYear % 30) + 1
+  };
+}
+
+  </script>
+  <script>
+// Visual Effects & Canvas Particle Engine for ArDeVi Dojo
+// 60 FPS Sakura Petals, Sparks, and Katana Slash Trail
+
+class DojoFX {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    this.petals = [];
+    this.sparks = [];
+    this.slashPoints = [];
+    this.animId = null;
+    this.isPaused = false;
+    this.width = 0;
+    this.height = 0;
+
+    if (this.canvas) {
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+      this.initPetals(28);
+      this.loop();
+    }
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    this.width = this.canvas.width = window.innerWidth;
+    this.height = this.canvas.height = window.innerHeight;
+  }
+
+  initPetals(count) {
+    this.petals = [];
+    for (let i = 0; i < count; i++) {
+      this.petals.push({
+        x: Math.random() * this.width,
+        y: Math.random() * this.height,
+        r: Math.random() * 4 + 3,
+        d: Math.random() * count,
+        angle: Math.random() * Math.PI * 2,
+        speedX: Math.random() * 1.2 - 0.2,
+        speedY: Math.random() * 0.8 + 0.6,
+        rotSpeed: Math.random() * 0.02 - 0.01,
+        alpha: Math.random() * 0.5 + 0.3
+      });
+    }
+  }
+
+  // Spawn fiery / golden sparks at x, y
+  spawnSparks(x, y, count = 24) {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 8 + 3;
+      this.sparks.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 3 + 1.5,
+        color: Math.random() > 0.4 ? '#fde047' : '#f97316',
+        life: 1.0,
+        decay: Math.random() * 0.04 + 0.02
+      });
+    }
+  }
+
+  triggerSlashTrail(startX, startY, endX, endY) {
+    const steps = 14;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const px = startX + (endX - startX) * t;
+      const py = startY + (endY - startY) * t;
+      this.slashPoints.push({ x: px, y: py, alpha: 1.0 });
+    }
+    this.spawnSparks((startX + endX) / 2, (startY + endY) / 2, 32);
+  }
+
+  loop() {
+    if (!this.ctx || this.isPaused) return;
+
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // 1. Draw and update Sakura Petals
+    const isDark = document.body.classList.contains('theme-dark') || !document.body.classList.contains('theme-light');
+    const petalColor = isDark ? 'rgba(255, 215, 230,' : 'rgba(230, 160, 180,';
+
+    this.petals.forEach((p) => {
+      p.angle += p.rotSpeed;
+      p.x += Math.sin(p.angle) * 0.8 + p.speedX;
+      p.y += p.speedY;
+
+      if (p.y > this.height + 10) {
+        p.y = -10;
+        p.x = Math.random() * this.width;
+      }
+      if (p.x > this.width + 10) p.x = -10;
+      if (p.x < -10) p.x = this.width + 10;
+
+      this.ctx.save();
+      this.ctx.translate(p.x, p.y);
+      this.ctx.rotate(p.angle);
+      this.ctx.fillStyle = petalColor + p.alpha + ')';
+      this.ctx.beginPath();
+      this.ctx.ellipse(0, 0, p.r * 1.5, p.r * 0.75, Math.PI / 4, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    });
+
+    // 2. Draw and update Sparks
+    for (let i = this.sparks.length - 1; i >= 0; i--) {
+      const s = this.sparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.2; // gravity
+      s.life -= s.decay;
+
+      if (s.life <= 0) {
+        this.sparks.splice(i, 1);
+        continue;
+      }
+
+      this.ctx.save();
+      this.ctx.globalAlpha = s.life;
+      this.ctx.fillStyle = s.color;
+      this.ctx.shadowColor = '#fbbf24';
+      this.ctx.shadowBlur = 6;
+      this.ctx.beginPath();
+      this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+
+    // 3. Draw Katana Slash Blade Trail
+    if (this.slashPoints.length > 1) {
+      this.ctx.save();
+      this.ctx.lineWidth = 4;
+      this.ctx.lineCap = 'round';
+      this.ctx.strokeStyle = '#ffffff';
+      this.ctx.shadowColor = '#facc15';
+      this.ctx.shadowBlur = 14;
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.slashPoints[0].x, this.slashPoints[0].y);
+      for (let i = 1; i < this.slashPoints.length; i++) {
+        this.ctx.lineTo(this.slashPoints[i].x, this.slashPoints[i].y);
+      }
+      this.ctx.stroke();
+      this.ctx.restore();
+
+      // Fade out trail
+      this.slashPoints.forEach(p => p.alpha -= 0.15);
+      if (this.slashPoints[0] && this.slashPoints[0].alpha <= 0) {
+        this.slashPoints = [];
+      }
+    }
+
+    this.animId = requestAnimationFrame(() => this.loop());
+  }
+
+  // Generate High-Res 1080x1920 Story Card for Telegram Stories
+  generateStoryCanvas(quote, user, katanaName) {
+    const c = document.createElement('canvas');
+    c.width = 1080;
+    c.height = 1920;
+    const ctx = c.getContext('2d');
+
+    // 1. Background (Sumi-e deep black lacquer & red gradient)
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
+    bgGrad.addColorStop(0, '#090a0f');
+    bgGrad.addColorStop(0.5, '#121420');
+    bgGrad.addColorStop(1, '#1a0d0d');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // 2. Gold border frame
+    ctx.strokeStyle = '#d4af37';
+    ctx.lineWidth = 12;
+    ctx.strokeRect(60, 60, 960, 1800);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(76, 76, 928, 1768);
+
+    // 3. Header
+    ctx.fillStyle = '#facc15';
+    ctx.font = 'bold 44px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.letterSpacing = '8px';
+    ctx.fillText('⛩️ ДОДЗЁ ARDEVI • ПУТЬ ВОИНА', 540, 220);
+
+    // 4. Large Kanji Stamp
+    ctx.font = 'bold 140px serif';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.25)';
+    ctx.fillText(quote.kanji || '武士道', 540, 540);
+
+    // 5. Quote Box
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 54px serif';
+    const words = quote.quote.split(' ');
+    let line = '', y = 780;
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      if (ctx.measureText(testLine).width > 800 && n > 0) {
+        ctx.fillText(line.trim(), 540, y);
+        line = words[n] + ' ';
+        y += 75;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line.trim(), 540, y);
+
+    // 6. Author
+    ctx.fillStyle = '#e5b869';
+    ctx.font = 'italic bold 42px sans-serif';
+    ctx.fillText('— ' + quote.author + ' (' + quote.source + ')', 540, y + 110);
+
+    // 7. Samurai Badge
+    ctx.fillStyle = '#1e2230';
+    ctx.strokeStyle = '#d4af37';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(140, 1420, 800, 220, 28);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#fef08a';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.fillText('САМУРАЙ: ' + user.firstName.toUpperCase(), 540, 1500);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '30px sans-serif';
+    ctx.fillText('Клинок: ' + (katanaName || 'Тамахаганэ ArDeVi') + ' • Печать Клана', 540, 1565);
+
+    // 8. Footer Callout
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '28px sans-serif';
+    ctx.fillText('Рассеки порок дня в Telegram @ardevi_dojo_bot', 540, 1780);
+
+    return c.toDataURL('image/png');
+  }
+}
+
+  </script>
+  <script>
+// ArDeVi Dojo • Core Mini App Engine
+
+const BLADES = [
+  { id: 0, name: 'Тамахаганэ ArDeVi', dmg: 350, title: 'Крестьянин', col: '#e5e7eb', stroke: '#d4af37' },
+  { id: 1, name: 'Дамаск Клана', dmg: 620, title: 'Подмастерье', col: '#94a3b8', stroke: '#38bdf8' },
+  { id: 2, name: 'Лазурный Дракон', dmg: 980, title: 'Самурай', col: '#38bdf8', stroke: '#0284c7' },
+  { id: 3, name: 'Чёрное Солнце ArDeVi', dmg: 1650, title: 'Сёгун', col: '#f97316', stroke: '#dc2626' }
+];
+
+const ONI_BOSSES = [
+  { name: 'Они Гордыни', emoji: '👹', maxHp: 35000, sin: 'Порок дня: Гордыня' },
+  { name: 'Они Лени', emoji: '👺', maxHp: 28000, sin: 'Порок дня: Лень' },
+  { name: 'Они Алчности', emoji: '🧌', maxHp: 42000, sin: 'Порок дня: Алчность' },
+  { name: 'Они Гнева', emoji: '👿', maxHp: 38000, sin: 'Порок дня: Гнев' }
+];
+
+class DojoApp {
+  constructor() {
+    this.user = window.tgBridge.user;
+    this.state = {
+      coins: 350,
+      spirit: 0,
+      streak: 1,
+      bladeIdx: 0,
+      lastCutDate: '',
+      lastRaidDate: '',
+      raidHp: 22400,
+      soundEnabled: true,
+      theme: 'dark'
+    };
+
+    this.todayQuote = getTodayQuote();
+    this.boss = ONI_BOSSES[new Date().getDay() % ONI_BOSSES.length];
+    this.fx = null;
+  }
+
+  async init() {
+    this.fx = new DojoFX('fxCanvas');
+
+    // Load persisted state
+    await this.loadState();
+
+    // Render components
+    this.renderTopBar();
+    this.renderDailyQuote();
+    this.renderRaidBoss();
+    this.renderForge();
+    this.renderLeaderboard();
+    this.renderCodex();
+
+    // Setup interactions
+    this.bindEvents();
+
+    console.log('⛩️ Додзё ArDeVi готово к тренировке воина!');
+  }
+
+  async loadState() {
+    const saved = await window.tgBridge.getStorage('dojo_state');
+    if (saved && typeof saved === 'object') {
+      this.state = { ...this.state, ...saved };
+    }
+
+    // Check if new day for reset
+    const todayStr = new Date().toISOString().slice(0, 10);
+    if (this.state.lastCutDate && this.state.lastCutDate !== todayStr) {
+      // Check if streak continued (yesterday)
+      const last = new Date(this.state.lastCutDate);
+      const diffDays = Math.floor((new Date() - last) / 86400000);
+      if (diffDays === 1) {
+        this.state.streak += 1;
+      } else if (diffDays > 1) {
+        this.state.streak = 1;
+      }
+    }
+  }
+
+  async saveState() {
+    await window.tgBridge.setStorage('dojo_state', this.state);
+  }
+
+  renderTopBar() {
+    const curBlade = BLADES[this.state.bladeIdx];
+    document.getElementById('rankTitle').textContent = curBlade.title;
+    document.getElementById('walletBalance').textContent = this.state.coins + ' Рё';
+    document.getElementById('streakText').textContent = '🔥 ' + this.state.streak + ' дн.';
+
+    const avatarInitial = document.getElementById('avatarInitial');
+    const avatarImg = document.getElementById('avatarImg');
+    if (this.user.photoUrl) {
+      avatarImg.src = this.user.photoUrl;
+      avatarImg.style.display = 'block';
+      avatarInitial.style.display = 'none';
+    } else {
+      avatarInitial.textContent = (this.user.firstName || 'С')[0].toUpperCase();
+    }
+  }
+
+  renderDailyQuote() {
+    document.getElementById('swKanji').textContent = '💮 ' + this.todayQuote.kanji;
+    document.getElementById('swQuote').textContent = '«' + this.todayQuote.quote + '»';
+    document.getElementById('swAuthor').textContent = '— ' + this.todayQuote.author;
+    document.getElementById('swSource').textContent = this.todayQuote.source + ' • Додзё ArDeVi';
+    document.getElementById('swDutyText').textContent = this.todayQuote.duty;
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const arena = document.getElementById('bambooArena');
+    const dutyBtn = document.getElementById('dutyBtn');
+
+    if (this.state.lastCutDate === todayStr) {
+      arena.classList.add('sliced');
+      dutyBtn.disabled = true;
+      dutyBtn.innerHTML = '✅ ПРАКТИКА ВЫПОЛНЕНА • ЧЕСТЬ КЛАНА';
+    }
+  }
+
+  renderRaidBoss() {
+    document.getElementById('bossName').textContent = this.boss.name;
+    document.getElementById('bossEmoji').textContent = this.boss.emoji;
+    document.getElementById('bossSin').textContent = this.boss.sin;
+
+    const curBlade = BLADES[this.state.bladeIdx];
+    document.getElementById('myStrikeDmg').textContent = '+' + curBlade.dmg + ' DMG';
+
+    const pct = Math.max(0, Math.min(100, Math.round((this.state.raidHp / this.boss.maxHp) * 100)));
+    document.getElementById('hpBarFill').style.width = pct + '%';
+    document.getElementById('hpBarVal').textContent = this.state.raidHp.toLocaleString() + ' / ' + this.boss.maxHp.toLocaleString() + ' HP';
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const strikeBtn = document.getElementById('strikeBtn');
+    if (this.state.lastRaidDate === todayStr) {
+      strikeBtn.disabled = true;
+      strikeBtn.innerHTML = '✅ УДАР НАНЕСЁН: +' + curBlade.dmg + ' DMG';
+    }
+  }
+
+  renderForge() {
+    const curBlade = BLADES[this.state.bladeIdx];
+    document.getElementById('forgeBladeName').textContent = curBlade.name;
+    document.getElementById('forgeBladeDmg').textContent = '+' + curBlade.dmg + ' DMG';
+    document.getElementById('forgeBladeTitle').textContent = 'Титул: ' + curBlade.title;
+
+    // Update SVG Blade Color
+    const svgBlade = document.getElementById('svgBladePath');
+    if (svgBlade) {
+      svgBlade.setAttribute('fill', curBlade.col);
+      svgBlade.setAttribute('stroke', curBlade.stroke);
+    }
+
+    const grid = document.getElementById('bladeGrid');
+    grid.innerHTML = BLADES.map((b) => `
+      <div class="blade-card ${b.id === this.state.bladeIdx ? 'selected' : ''}" onclick="window.dojoApp.selectBlade(${b.id})">
+        <div class="bc-icon">🗡️</div>
+        <div class="bc-name">${b.name}</div>
+        <div class="bc-dmg">+${b.dmg} DMG</div>
+      </div>
+    `).join('');
+  }
+
+  renderLeaderboard() {
+    const curBlade = BLADES[this.state.bladeIdx];
+    const warriors = [
+      { pos: '🥇', name: 'Кэнсэй Рэй', rank: 'Сёгун', dmg: 2150 },
+      { pos: '🥈', name: 'Самурай Кэндзи', rank: 'Самурай', dmg: 1420 },
+      { pos: '🥉', name: 'Ронин Тацу', rank: 'Самурай', dmg: 1280 },
+      { pos: '4', name: 'Хиро Накамура', rank: 'Подмастерье', dmg: 890 },
+      { pos: '5', name: this.user.firstName + ' (Вы)', rank: curBlade.title, dmg: (this.state.lastRaidDate ? curBlade.dmg : 0), me: true },
+      { pos: '6', name: 'Дзиро Ямада', rank: 'Крестьянин', dmg: 350 },
+      { pos: '7', name: 'Кадзуки Мори', rank: 'Крестьянин', dmg: 350 }
+    ];
+
+    const list = document.getElementById('lbList');
+    list.innerHTML = warriors.map((w) => `
+      <div class="lb-item ${w.me ? 'me' : ''}">
+        <div class="lb-left">
+          <span class="lb-pos">${w.pos}</span>
+          <span class="lb-name">${w.name}</span>
+          <span class="lb-rank">${w.rank}</span>
+        </div>
+        <span class="lb-dmg">+${w.dmg.toLocaleString()}</span>
+      </div>
+    `).join('');
+  }
+
+  renderCodex() {
+    const grid = document.getElementById('codexGrid');
+    grid.innerHTML = BUSHIDO_CODEX.map((c) => `
+      <div class="codex-row">
+        <div class="codex-kanji">${c.kanji}</div>
+        <div>
+          <div class="codex-title">${c.title} (${c.roma})</div>
+          <div class="codex-desc">${c.desc}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // --- Actions ---
+
+  sliceBamboo(event) {
+    const arena = document.getElementById('bambooArena');
+    if (arena.classList.contains('sliced')) return;
+
+    window.dojoAudio.playSlash();
+    window.tgBridge.haptic('heavy');
+
+    arena.classList.add('slashing');
+
+    // Trigger visual sparks and slash trail
+    const rect = arena.getBoundingClientRect();
+    const startX = rect.left + rect.width * 0.2;
+    const startY = rect.top + rect.height * 0.3;
+    const endX = rect.left + rect.width * 0.8;
+    const endY = rect.top + rect.height * 0.7;
+    this.fx.triggerSlashTrail(startX, startY, endX, endY);
+
+    setTimeout(() => {
+      window.dojoAudio.playClink();
+      arena.classList.add('sliced');
+      window.tgBridge.haptic('success');
+    }, 180);
+  }
+
+  acceptDuty() {
+    window.dojoAudio.playStamp();
+    window.dojoAudio.playGong();
+    window.tgBridge.haptic('success');
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    this.state.lastCutDate = todayStr;
+    this.state.spirit += 50;
+    this.state.coins += 100;
+
+    const btn = document.getElementById('dutyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '✅ ПРАКТИКА ВЫПОЛНЕНА • ЧЕСТЬ КЛАНА';
+
+    this.renderTopBar();
+    this.saveState();
+  }
+
+  strikeRaidBoss() {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    if (this.state.lastRaidDate === todayStr) return;
+
+    window.dojoAudio.playSlash();
+    window.dojoAudio.playClink();
+    window.tgBridge.haptic('heavy');
+
+    const curBlade = BLADES[this.state.bladeIdx];
+    this.state.lastRaidDate = todayStr;
+    this.state.raidHp = Math.max(0, this.state.raidHp - curBlade.dmg);
+    this.state.coins += 150;
+
+    // Shake animation
+    const emoji = document.getElementById('bossEmoji');
+    emoji.classList.add('shaking');
+    setTimeout(() => emoji.classList.remove('shaking'), 320);
+
+    const btn = document.getElementById('strikeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '✅ УДАР НАНЕСЁН: +' + curBlade.dmg + ' DMG';
+
+    this.renderTopBar();
+    this.renderRaidBoss();
+    this.renderLeaderboard();
+    this.saveState();
+  }
+
+  selectBlade(idx) {
+    if (idx === this.state.bladeIdx) return;
+    window.dojoAudio.playClink();
+    window.tgBridge.haptic('medium');
+
+    this.state.bladeIdx = idx;
+    this.renderTopBar();
+    this.renderForge();
+    this.renderRaidBoss();
+    this.renderLeaderboard();
+    this.saveState();
+  }
+
+  switchTab(idx) {
+    window.tgBridge.haptic('selection');
+    document.querySelectorAll('.dock-item').forEach((d, i) => d.classList.toggle('active', i === idx));
+    document.querySelectorAll('.view-section').forEach((v, i) => v.classList.toggle('active', i === idx));
+  }
+
+  toggleTheme() {
+    window.tgBridge.haptic('light');
+    const isLight = document.body.classList.toggle('theme-light');
+    this.state.theme = isLight ? 'light' : 'dark';
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌓';
+    this.saveState();
+  }
+
+  toggleSound() {
+    const on = window.dojoAudio.toggle();
+    window.tgBridge.haptic('light');
+    document.getElementById('soundBtn').textContent = on ? '🔊' : '🔇';
+  }
+
+  shareWisdomStory() {
+    window.tgBridge.haptic('medium');
+    const curBlade = BLADES[this.state.bladeIdx];
+    const dataUrl = this.fx.generateStoryCanvas(this.todayQuote, this.user, curBlade.name);
+
+    // Try native shareToStory
+    const shared = window.tgBridge.shareStory(dataUrl, `«${this.todayQuote.quote}» — ${this.todayQuote.author}`, 'https://t.me/ardevi_dojo_bot');
+
+    if (!shared) {
+      // Fallback share URL
+      const text = `⚔️ Мудрость Бусидо дня из Додзё ArDeVi:\n\n«${this.todayQuote.quote}»\n— ${this.todayQuote.author} (${this.todayQuote.source})\n\nВступай в Додзё:`;
+      const url = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/ardevi_dojo_bot') + '&text=' + encodeURIComponent(text);
+      window.tgBridge.openLink(url);
+    }
+  }
+
+  bindEvents() {
+    document.getElementById('bambooArena').addEventListener('click', (e) => this.sliceBamboo(e));
+    document.getElementById('dutyBtn').addEventListener('click', () => this.acceptDuty());
+    document.getElementById('strikeBtn').addEventListener('click', () => this.strikeRaidBoss());
+    document.getElementById('soundBtn').addEventListener('click', () => this.toggleSound());
+    document.getElementById('themeBtn').addEventListener('click', () => this.toggleTheme());
+    document.getElementById('shareStoryBtn').addEventListener('click', () => this.shareWisdomStory());
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  window.dojoApp = new DojoApp();
+  window.dojoApp.init();
+});
+
+  </script>
+
+</body>
+</html>

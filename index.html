@@ -1985,8 +1985,8 @@ body.theme-light .pm-cancel-btn {
       </div>
 
       <div class="raid-stats-grid">
-        <div class="raid-stat-pill" id="raidWarriorsCount">👥 В строю: 48 самураев</div>
-        <div class="raid-stat-pill" id="raidClanDamage">💥 Урон клана: 3 120</div>
+        <div class="raid-stat-pill" id="raidWarriorsCount">👥 В строю: 1 самурай (Вы)</div>
+        <div class="raid-stat-pill" id="raidClanDamage">💥 Ваш урон: 0 DMG</div>
       </div>
 
       <div class="leaderboard-box">
@@ -3518,7 +3518,7 @@ body.theme-light .pm-cancel-btn {
     renderRaidBoss();
   }
 
-  const CLAN_WARRIORS_BASE = "Такеда #77:840:Кэнсэй|Рюдзи #12:620:Хатамото|Мусаси #45:490:Хатамото|Хатори #88:380:Самурай|Юки #09:310:Самурай|Син #23:260:Самурай|Гэндзи #34:210:Асигару|Хиро #56:170:Асигару|Кэндзи #03:130:Крестьянин|Дайки #19:85:Крестьянин".split("|").map(s=>{const[name,dmg,rank]=s.split(":");return{name,dmg:+dmg,rank};});
+  const CLAN_WARRIORS_BASE = [];return{name,dmg:+dmg,rank};});
 
   function getKatanaStats() {
     const swd = SWORD_MODELS.find(s => s.id === state.sword) || SWORD_MODELS[0];
@@ -3618,7 +3618,7 @@ body.theme-light .pm-cancel-btn {
     document.getElementById("bossKanji").textContent = boss.kanji;
     document.getElementById("bossSvg").innerHTML = drawBossSvg(boss);
 
-    const hp = state.raidBossHp !== undefined ? state.raidBossHp : Math.round(boss.hp * 0.45);
+    const hp = state.raidBossHp !== undefined ? state.raidBossHp : boss.hp;
     const pct = Math.max(0, Math.min(100, Math.round((hp / boss.hp) * 100)));
     document.getElementById("bossHpText").textContent = hp > 0 ? `${hp} / ${boss.hp} HP (${pct}%)` : `0 / ${boss.hp} HP (Повержен!)`;
     document.getElementById("bossHpFill").style.width = `${pct}%`;
@@ -3644,33 +3644,34 @@ body.theme-light .pm-cancel-btn {
       rBtn.classList.remove("cooldown");
     }
 
-    const totalClanDmg = (boss.hp - hp) + (state.raidDmg || 0);
-    document.getElementById("raidClanDamage").textContent = `💥 Урон клана: ${totalClanDmg}`;
+    const myDmg = state.raidDmg || 0;
+    const warriorsCount = 1;
+    document.getElementById("raidWarriorsCount").textContent = "👥 В строю: 1 самурай (Вы)";
+    document.getElementById("raidClanDamage").textContent = `💥 Ваш урон: ${myDmg} DMG`;
 
-    // Render Clan Hall of Fame Leaderboard (All participants with ranks)
-    const allWarriors = CLAN_WARRIORS_BASE.slice();
-    allWarriors.push({
+    // На доске почёта отображается только реальный игрок
+    const myWarrior = {
       name: getSamuraiName(),
-      dmg: state.raidDmg || 0,
+      dmg: myDmg,
       rank: getCurrentRankTitle(),
       isMe: true
-    });
-    allWarriors.sort((a, b) => b.dmg - a.dmg);
+    };
 
-    const medals = ["🥇", "🥈", "🥉"];
-    document.getElementById("clanLeaderboardList").innerHTML = allWarriors.map((w, idx) => {
-      const medal = medals[idx] || `⚔️ ${idx + 1}`;
-      return `<div class="lb-item ${w.isMe ? 'me' : ''}">
+    document.getElementById("clanLeaderboardList").innerHTML = `
+      <div class="lb-item me">
         <div class="lb-left">
-          <span class="lb-medal">${medal}</span>
+          <span class="lb-medal">🥇</span>
           <div>
-            <div class="lb-name">${w.name} ${w.isMe ? '<small style="color:#facc15;font-weight:800;">(Вы)</small>' : ''}</div>
-            <div style="font-size:10px;color:#9ca3af;font-weight:600;">Титул: ${w.rank}</div>
+            <div class="lb-name">${myWarrior.name} <small style="color:#facc15;font-weight:800;">(Вы)</small></div>
+            <div style="font-size:10px;color:#9ca3af;font-weight:600;">Титул: ${myWarrior.rank}</div>
           </div>
         </div>
-        <span class="lb-dmg">${w.dmg} DMG</span>
-      </div>`;
-    }).join("");
+        <span class="lb-dmg">${myWarrior.dmg} DMG</span>
+      </div>
+      <div style="padding: 12px 10px; text-align: center; font-size: 11px; color: #9ca3af; line-height: 1.4;">
+        ⛩ Другие воины клана готовятся к битве. Вы возглавляете авангард ArDeVi!
+      </div>
+    `;
   }
 
   

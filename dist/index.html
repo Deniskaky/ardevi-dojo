@@ -3671,9 +3671,13 @@ body.theme-light .pm-cancel-btn {
       state.raidStruck = false;
       state.raidClaimed = false;
       saveState();
-    } else if (!state.raidStruck && (state.raidBossHp === undefined || state.raidBossHp < b.hp)) {
-      state.raidBossHp = b.hp; // Reset unattacked boss to 100%
-      saveState();
+    } else {
+      // Auto-heal boss from old 45% bug: should be 100% minus today's actual player damage
+      const expectedHp = b.hp - (state.raidStruck ? (state.raidDmg || 0) : 0);
+      if (state.raidBossHp === undefined || state.raidBossHp < expectedHp) {
+        state.raidBossHp = expectedHp;
+        saveState();
+      }
     }
   }
 
